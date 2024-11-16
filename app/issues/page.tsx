@@ -1,7 +1,7 @@
 import { CustomLink, IssueStatusBadge } from '@/app/components';
 import prisma from '@/prisma/client';
 import { Table } from '@radix-ui/themes';
-import IssuesToolbar from './_components/IssuesToolbar';
+import IssuesToolbar from './IssuesToolbar';
 
 const IssuesPage = async () => {
   const issues = await prisma.issue.findMany();
@@ -47,5 +47,7 @@ const IssuesPage = async () => {
     </div>
   );
 };
+
+export const dynamic = 'force-dynamic';
 
 export default IssuesPage;
