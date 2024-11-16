@@ -40,7 +40,14 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     try {
       setSubmitting(true);
 
-      await axios.post('/api/issues', data);
+      const apiUrl = '/api/issues';
+
+      // prettier-ignore
+      if (issue) 
+        await axios.patch(`${apiUrl}/${issue.id}`, data);
+      else 
+        await axios.post(apiUrl, data);
+
       router.push('/issues');
     } catch (error) {
       setSubmitting(false);
@@ -79,7 +86,8 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={isSubmitting}>
-          Submit New Issue {isSubmitting && <Spinner />}
+          {issue ? 'Update Issue' : 'Submit New Issue'}{' '}
+          {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
