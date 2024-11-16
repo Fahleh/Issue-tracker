@@ -1,11 +1,12 @@
 import { Skeleton } from '@/app/components';
+import { Box } from '@radix-ui/themes';
 
 const NewIssueLoadingPage = () => {
   return (
-    <div className="max-w-xl">
+    <Box className="max-w-xl">
       <Skeleton height="2rem" />
       <Skeleton height="20rem" />
-    </div>
+    </Box>
   );
 };
 
