@@ -27,7 +27,7 @@ const IssuesPage = async () => {
           {issues.map((issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
-                <CustomLink href={`issues/${issue.id}`}>
+                <CustomLink href={`${issue.id}`}>
                   {issue.title}
                 </CustomLink>
                 <div className="block md:hidden">
