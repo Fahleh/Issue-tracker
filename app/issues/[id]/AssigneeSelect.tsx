@@ -1,11 +1,12 @@
 'use client';
 
 import { Skeleton } from '@/app/components';
-import { User } from '@prisma/client';
+import { Issue, User } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { ChangeEvent } from 'react';
 
-const AssigneeSelect = () => {
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
     data: users,
     error,
@@ -21,9 +22,23 @@ const AssigneeSelect = () => {
 
   if (error) return null;
 
+  const assignIssue = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+
+    axios.patch('/api/issues/' + issue.id, {
+      assignedToUserId: value || null,
+    });
+  };
+
   return (
-    <select name="" id="" className="border-2 rounded-md p-1 bg">
-      <option value="">Assign...</option>
+    <select
+      onChange={assignIssue}
+      defaultValue={issue.assignedToUserId || ''}
+      name=""
+      id=""
+      className="border-2 rounded-md p-1 bg"
+    >
+      <option value="">Unassigned</option>
       <option value="" disabled>
         Suggestions
       </option>
