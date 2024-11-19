@@ -8,16 +8,7 @@ import { ChangeEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
-    queryKey: ['users'],
-    queryFn: () => axios.get('/api/users').then((response) => response.data),
-    staleTime: 60 * 1000,
-    retry: 3,
-  });
+  const { data: users, error, isLoading } = useUsers();
 
   if (isLoading) return <Skeleton height="2rem" />;
 
@@ -36,7 +27,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
         color: 'white',
       },
     },
-  }
+  };
 
   const assignIssue = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -70,11 +61,17 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
           </option>
         ))}
       </select>
-      <Toaster
-        toastOptions={toastOptions}
-      />
+      <Toaster toastOptions={toastOptions} />
     </>
   );
 };
+
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ['users'],
+    queryFn: () => axios.get('/api/users').then((response) => response.data),
+    staleTime: 60 * 1000,
+    retry: 3,
+  });
 
 export default AssigneeSelect;
