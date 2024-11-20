@@ -2,9 +2,22 @@ import { CustomLink, IssueStatusBadge } from '@/app/components';
 import prisma from '@/prisma/client';
 import { Table } from '@radix-ui/themes';
 import IssuesToolbar from './IssuesToolbar';
+import { Status } from '@prisma/client';
 
-const IssuesPage = async () => {
-  const issues = await prisma.issue.findMany();
+interface Props {
+  searchParams: Promise<{ status: Status }>;
+}
+
+const IssuesPage = async ({ searchParams }: Props) => {
+  const statuses = Object.keys(Status);
+
+  const result = (await searchParams).status;
+
+  const status = statuses.includes(result) ? result : undefined;
+
+  const issues = await prisma.issue.findMany({
+    where: { status },
+  });
 
   return (
     <div>
@@ -27,9 +40,7 @@ const IssuesPage = async () => {
           {issues.map((issue) => (
             <Table.Row key={issue.id}>
               <Table.Cell>
-                <CustomLink href={`${issue.id}`}>
-                  {issue.title}
-                </CustomLink>
+                <CustomLink href={`${issue.id}`}>{issue.title}</CustomLink>
                 <div className="block md:hidden">
                   <IssueStatusBadge status={issue.status} />
                 </div>
