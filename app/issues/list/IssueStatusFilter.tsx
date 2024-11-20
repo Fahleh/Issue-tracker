@@ -33,7 +33,7 @@ const IssueStatusFilter = () => {
         Filter by status...
       </option>
       {statuses.map((status) => (
-        <option key={status.value} value={status.value || ''}>
+        <option key={status.value || '-'} value={status.value || ''}>
           {status.label}
         </option>
       ))}
