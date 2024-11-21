@@ -16,6 +16,8 @@ interface Props {
   searchParams: Promise<FilterParams>;
 }
 
+let lastSortOrder: string | undefined;
+
 const IssuesPage = async ({ searchParams }: Props) => {
   const columns: { label: string; value: keyof Issue; className?: string }[] = [
     { label: 'Issue', value: 'title' },
@@ -25,8 +27,19 @@ const IssuesPage = async ({ searchParams }: Props) => {
 
   const params = await searchParams;
 
-  // prettier-ignore
-  const { status, nextSortOrder, orderBy, sortOrderIcon } = useFilterAndSort(params);
+  const statuses = Object.keys(Status);
+
+  const status = statuses.includes(params.status) ? params.status : undefined;
+
+  const validSortOrder = params.order && ['asc', 'desc'].includes(params.order);
+
+  const sortOrder = validSortOrder ? params.order : 'asc';
+
+  lastSortOrder = params.order ? sortOrder : undefined;
+
+  const orderBy = params.orderBy ? { [params.orderBy]: sortOrder } : undefined;
+
+  const sortBy = lastSortOrder && sortOrder === 'asc' ? 'desc' : 'asc';
 
   const issues = await prisma.issue.findMany({
     where: { status },
@@ -47,13 +60,18 @@ const IssuesPage = async ({ searchParams }: Props) => {
                     query: {
                       ...params,
                       orderBy: column.value,
-                      order: nextSortOrder,
+                      order: sortBy,
                     },
                   }}
                 >
                   {column.label}
                 </Link>
-                {column.value === params.orderBy && sortOrderIcon}
+                {column.value === params.orderBy &&
+                  (sortOrder === 'asc' ? (
+                    <ArrowUpIcon className="inline" />
+                  ) : (
+                    <ArrowDownIcon className="inline" />
+                  ))}
               </Table.ColumnHeaderCell>
             ))}
           </Table.Row>
@@ -80,30 +98,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
       </Table.Root>
     </div>
   );
-};
-
-const useFilterAndSort = (searchParams: FilterParams) => {
-  const statuses = Object.keys(Status);
-
-  const result = searchParams.status;
-
-  const status = statuses.includes(result) ? result : undefined;
-
-  const currentSortOrder = searchParams.order || 'asc';
-  const nextSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
-
-  const orderBy = searchParams.orderBy
-    ? { [searchParams.orderBy]: nextSortOrder }
-    : undefined;
-
-  const sortOrderIcon =
-    nextSortOrder === 'asc' ? (
-      <ArrowUpIcon className="inline" />
-    ) : (
-      <ArrowDownIcon className="inline" />
-    );
-
-  return { status, nextSortOrder, orderBy, sortOrderIcon };
 };
 
 export const dynamic = 'force-dynamic';
