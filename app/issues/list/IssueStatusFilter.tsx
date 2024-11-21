@@ -1,11 +1,13 @@
 'use client';
 
 import { Status } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
 const IssueStatusFilter = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams();
 
   const statuses: { label: string; value?: Status }[] = [
     { label: 'All' },
@@ -17,7 +19,11 @@ const IssueStatusFilter = () => {
   const filterByStatus = (event: ChangeEvent<HTMLSelectElement>) => {
     const status = event.target.value;
 
-    const query = status ? `?status=${status}` : '';
+    if (status) params.append('status', status);
+    if (searchParams.get('orderBy'))
+      params.append('orderBy', searchParams.get('orderBy')!);
+
+    const query = params.size ? '?' + params.toString() : '';
     router.push(`/issues/list${query} `);
   };
 
@@ -26,8 +32,8 @@ const IssueStatusFilter = () => {
       onChange={filterByStatus}
       name="filter"
       id="filter-select"
-      className="border-2 rounded-md p-1 bg"
-      defaultValue="-"
+      className="border-2 rounded-md p-1 w-16 md:w-fit"
+      defaultValue={searchParams.get('status') || '-'}
     >
       <option value="-" disabled>
         Filter by status...
