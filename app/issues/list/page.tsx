@@ -4,10 +4,16 @@ import { Table } from '@radix-ui/themes';
 import IssuesToolbar from './IssuesToolbar';
 import { Issue, Status } from '@prisma/client';
 import Link from 'next/link';
-import { ArrowUpIcon } from '@radix-ui/react-icons';
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons';
+
+interface FilterParams {
+  status: Status;
+  orderBy: keyof Issue;
+  order: 'asc' | 'desc';
+}
 
 interface Props {
-  searchParams: Promise<{ status: Status; orderBy: keyof Issue }>;
+  searchParams: Promise<FilterParams>;
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
@@ -16,15 +22,11 @@ const IssuesPage = async ({ searchParams }: Props) => {
     { label: 'Status', value: 'status', className: 'hidden md:table-cell' },
     { label: 'Created', value: 'createdAt', className: 'hidden md:table-cell' },
   ];
-  const statuses = Object.keys(Status);
 
   const params = await searchParams;
 
-  const result = params.status;
-
-  const status = statuses.includes(result) ? result : undefined;
-
-  const orderBy = params.orderBy ? { [params.orderBy]: 'asc' } : undefined;
+  // prettier-ignore
+  const { status, nextSortOrder, orderBy, sortOrderIcon } = useFilterAndSort(params);
 
   const issues = await prisma.issue.findMany({
     where: { status },
@@ -42,14 +44,16 @@ const IssuesPage = async ({ searchParams }: Props) => {
               <Table.ColumnHeaderCell key={column.value}>
                 <Link
                   href={{
-                    query: { ...params, orderBy: column.value },
+                    query: {
+                      ...params,
+                      orderBy: column.value,
+                      order: nextSortOrder,
+                    },
                   }}
                 >
                   {column.label}
                 </Link>
-                {column.value === params.orderBy && (
-                  <ArrowUpIcon className="inline" />
-                )}
+                {column.value === params.orderBy && sortOrderIcon}
               </Table.ColumnHeaderCell>
             ))}
           </Table.Row>
@@ -76,6 +80,30 @@ const IssuesPage = async ({ searchParams }: Props) => {
       </Table.Root>
     </div>
   );
+};
+
+const useFilterAndSort = (searchParams: FilterParams) => {
+  const statuses = Object.keys(Status);
+
+  const result = searchParams.status;
+
+  const status = statuses.includes(result) ? result : undefined;
+
+  const currentSortOrder = searchParams.order || 'asc';
+  const nextSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+
+  const orderBy = searchParams.orderBy
+    ? { [searchParams.orderBy]: nextSortOrder }
+    : undefined;
+
+  const sortOrderIcon =
+    nextSortOrder === 'asc' ? (
+      <ArrowUpIcon className="inline" />
+    ) : (
+      <ArrowDownIcon className="inline" />
+    );
+
+  return { status, nextSortOrder, orderBy, sortOrderIcon };
 };
 
 export const dynamic = 'force-dynamic';
