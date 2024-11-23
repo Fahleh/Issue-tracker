@@ -5,12 +5,10 @@ import { ResponsiveContainer, BarChart, XAxis, YAxis, Bar } from 'recharts';
 import React from 'react';
 
 interface Props {
-  open: number;
-  inProgress: number;
-  closed: number;
+  statusCount: { open: number; inProgress: number; closed: number };
 }
 
-const IssueChart = ({ open, inProgress, closed }: Props) => {
+const IssueChart = ({ statusCount: { open, inProgress, closed } }: Props) => {
   const data = [
     { label: 'Open', value: open },
     { label: 'In Progress', value: inProgress },
