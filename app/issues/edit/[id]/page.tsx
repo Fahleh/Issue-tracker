@@ -1,7 +1,7 @@
 import prisma from '@/prisma/client';
 import { notFound } from 'next/navigation';
-import IssueForm from '../../_components/IssueForm';
 import { cache } from 'react';
+import IssueForm from '../../_components/IssueForm';
 
 const fetchIssue = cache((issueId: number) =>
   prisma.issue.findUnique({ where: { id: issueId } })
