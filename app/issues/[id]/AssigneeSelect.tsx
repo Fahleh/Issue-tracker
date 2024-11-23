@@ -33,7 +33,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     const value = event.target.value;
 
     axios
-      .patch('/xapi/issues/' + issue.id, {
+      .patch('/api/issues/' + issue.id, {
         assignedToUserId: value || null,
       })
       .then(() => toast.success(`Issue assigned successfully.`))
