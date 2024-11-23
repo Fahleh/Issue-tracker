@@ -9,6 +9,7 @@ import AssigneeSelect from './AssigneeSelect';
 import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
+import IssueStatusToggleButton from './IssueStatusToggleButton';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -40,6 +41,7 @@ const IssueDetailsPage = async ({ params }: RouteParams) => {
             <AssigneeSelect issue={issue} />
             <EditIssueButton issueId={issue.id} />
             <DeleteIssueButton issueId={issue.id} />
+            <IssueStatusToggleButton issueId={issue.id} status={issue.status} />
           </Flex>
         )}
       </Box>

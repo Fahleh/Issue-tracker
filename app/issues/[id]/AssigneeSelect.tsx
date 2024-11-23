@@ -4,11 +4,13 @@ import { Skeleton } from '@/app/components';
 import { Issue, User } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const { data: users, error, isLoading } = useUsers();
+  const router = useRouter();
 
   if (isLoading) return <Skeleton height="2rem" />;
 
@@ -32,11 +34,17 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const assignIssue = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
 
+    const status = value ? 'IN_PROGRESS' : 'OPEN';
+
     axios
       .patch('/api/issues/' + issue.id, {
         assignedToUserId: value || null,
+        status,
       })
-      .then(() => toast.success(`Issue assigned successfully.`))
+      .then(() => {
+        toast.success(`Issue assigned successfully.`);
+        router.refresh();
+      })
       .catch(() => {
         toast.error('Changes could not be saved.');
       });

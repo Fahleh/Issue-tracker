@@ -35,7 +35,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
-          <AlertDialog.Title>Confiirm Deletion</AlertDialog.Title>
+          <AlertDialog.Title>Confirm Deletion</AlertDialog.Title>
           <AlertDialog.Description>
             Are you sure you want to delete this issue? This action cannot be
             undone.
