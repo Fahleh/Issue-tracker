@@ -51,9 +51,7 @@ const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       const allowedUrls = ['/issues/new', '/items/edit/:id'];
 
-      if (allowedUrls.some((allowed) => url.startsWith(baseUrl + allowed))) {
-        return url;
-      }
+      if (allowedUrls.includes(url)) return url;
 
       return baseUrl;
     },
