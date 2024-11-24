@@ -6,7 +6,7 @@ import { AiFillBug } from 'react-icons/ai';
 import { usePathname } from 'next/navigation';
 import classnames from 'classnames';
 import { useSession } from 'next-auth/react';
-import { Skeleton } from '@/app/components'
+import { Skeleton } from '@/app/components';
 import {
   Avatar,
   Box,
@@ -64,33 +64,60 @@ const NavLinks = () => {
 
 const AuthStatus = () => {
   const { status, data: session } = useSession();
+  const currentPath = usePathname();
 
-  if (status === 'loading') return <Skeleton width='3rem' />;
+  const authLinks = [
+    { label: 'Register', href: '/register' },
+    { label: 'Login', href: '/api/auth/signin' },
+  ];
+
+  if (status === 'loading') return <Skeleton width="3rem" />;
 
   if (status === 'unauthenticated')
-    return <Link className='nav-link' href="/api/auth/signin">Login</Link>;
+    return (
+      <Flex gap="2">
+        {authLinks.map((link) => (
+          <Link
+            key={link.href}
+            className={classnames({
+              'nav-link': true,
+              '!text-zinc-900': link.href === currentPath,
+            })}
+            href={link.href}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </Flex>
+    );
 
   return (
     <Box>
       <Box>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <Avatar
-              src={session!.user!.image!}
-              fallback="?"
-              size="2"
-              radius="full"
-              className="cursor-pointer"
-              referrerPolicy='no-referrer'
-            />
+            {session?.user?.image ? (
+              <Avatar
+                src={session.user.image}
+                fallback="?"
+                size="2"
+                radius="full"
+                className="cursor-pointer"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 cursor-pointer">
+                ?
+              </div>
+            )}
           </DropdownMenu.Trigger>
           <DropdownMenu.Content>
             <DropdownMenu.Label>
               <Text size="2">{session!.user!.email}</Text>
             </DropdownMenu.Label>
-            <DropdownMenu.Item>
-              <Link href="/api/auth/signout">Log out</Link>
-            </DropdownMenu.Item>
+            <Link href="/api/auth/signout">
+              <DropdownMenu.Item>Log out</DropdownMenu.Item>
+            </Link>
           </DropdownMenu.Content>
         </DropdownMenu.Root>
       </Box>

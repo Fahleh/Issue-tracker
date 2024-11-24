@@ -6,7 +6,7 @@ import { IssueStatusBadge } from './components';
 const LatestIssues = async () => {
   const issues = await prisma.issue.findMany({
     orderBy: { createdAt: 'desc' },
-    take: 5,
+    take: 10,
     include: {
       assignedToUser: true,
     },
@@ -14,7 +14,7 @@ const LatestIssues = async () => {
 
   return (
     <Card>
-      <Heading size="4" mb="5">
+      <Heading size="6" mb="5">
         Latest Issues
       </Heading>
       <Table.Root>

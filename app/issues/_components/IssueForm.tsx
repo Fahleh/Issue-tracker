@@ -2,6 +2,7 @@
 
 import ErrorMessage from '@/app/components/ErrorMessage';
 import Spinner from '@/app/components/Spinner';
+import { parseError } from '@/app/util';
 import { issueSchema } from '@/app/validationSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Issue } from '@prisma/client';
@@ -49,6 +50,9 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
       setSubmitting(false);
 
       setError('An unexpected error occurred.');
+      const errorMessage = parseError(error);
+
+      setError(errorMessage);
     }
   });
 
