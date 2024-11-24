@@ -47,6 +47,17 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      const allowedUrls = ['/issues/new', '/items/edit/:id'];
+
+      if (allowedUrls.some((allowed) => url.startsWith(baseUrl + allowed))) {
+        return url;
+      }
+
+      return baseUrl;
+    },
+  },
 };
 
 export default authOptions;

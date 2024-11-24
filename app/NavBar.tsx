@@ -88,12 +88,6 @@ const AuthStatus = () => {
             {link.label}
           </Link>
         ))}
-        {/* <Link className="nav-link" href="/register">
-          Register
-        </Link>
-        <Link className="nav-link" href="/api/auth/signin">
-          Login
-        </Link> */}
       </Flex>
     );
 
@@ -121,9 +115,9 @@ const AuthStatus = () => {
             <DropdownMenu.Label>
               <Text size="2">{session!.user!.email}</Text>
             </DropdownMenu.Label>
-            <DropdownMenu.Item>
-              <Link href="/api/auth/signout">Log out</Link>
-            </DropdownMenu.Item>
+            <Link href="/api/auth/signout">
+              <DropdownMenu.Item>Log out</DropdownMenu.Item>
+            </Link>
           </DropdownMenu.Content>
         </DropdownMenu.Root>
       </Box>
