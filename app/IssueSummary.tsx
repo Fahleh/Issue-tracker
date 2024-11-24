@@ -19,14 +19,14 @@ const IssueSummary = ({ statusCount: { open, inProgress, closed } }: Props) => {
   ];
 
   return (
-    <Flex gap="4" justify="between">
+    <Flex gap="4" justify="between" className="flex-col md:flex-row">
       {containers.map((container) => (
         <Link
           key={container.label}
           href={`/issues/list?status=${container.status}`}
           className="flex flex-col items-center text-md font-medium rounded-md hover:shadow-md hover:bg-zinc-300 mb-3"
         >
-          <Card className="w-44 h-32 ">
+          <Card className="w-full h-48 md:w-44 md:h-32 ">
             <Flex
               direction="column"
               gap="1"

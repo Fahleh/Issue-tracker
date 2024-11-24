@@ -3,17 +3,14 @@ import { error } from 'console';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { registerSchema } from '@/app/validationSchema';
 
-const schema = z.object({
-  name: z.string().min(3).max(15),
-  email: z.string().email(),
-  password: z.string().min(5),
-});
+
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const validation = schema.safeParse(body);
+  const validation = registerSchema.safeParse(body);
 
   if (!validation.success)
     return NextResponse.json(validation.error.errors, { status: 400 });
